@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { inject } from 'vue';
+
+let labelstyle = inject('labelstyle');
 
 </script>
 
 <template>
-    <p class="text-white">Activity Log</p>
+    <p :class="labelstyle">Activity Log</p>
     
 </template>
 
  <style scoped>
 
- </style>
+ </style> 

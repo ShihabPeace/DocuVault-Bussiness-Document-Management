@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { inject } from 'vue';
+
+let labelstyle = inject('labelstyle');
 
 </script>
 
 <template>
     
-    <p class="text-white">Expired Documents</p>
-</template>
+    <p :class="labelstyle">Expired Documents</p>
+</template> 
 
  <style scoped>
 

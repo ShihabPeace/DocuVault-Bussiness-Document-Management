@@ -3,9 +3,19 @@ import RecAccDocs from '@/components/widgets/RecAccDocs.vue';
 import PendingDocs from '@/components/widgets/PendingDocs.vue';
 import ActivityLog from '@/components/widgets/ActivityLog.vue';
 import ExpDocs from '@/components/widgets/ExpDocs.vue';
+import { provide, ref } from 'vue';
+import { Documents } from '@/schema/Documents';
 
 
 var cls: String = 'container  p-2 border border-white border-5 rounded-xl'
+provide('labelstyle', 'text-white text-[0.7em] font-bold')
+
+
+const  props  = defineProps<{ documents?: Documents[] }>()
+// const jsDocument: Documents[] = props.documents ?? [];
+
+
+provide('documents', props.documents ?? [])
 </script>
 
 <template>
@@ -23,3 +33,4 @@ var cls: String = 'container  p-2 border border-white border-5 rounded-xl'
 </template>
 
 <style scoped></style>
+
