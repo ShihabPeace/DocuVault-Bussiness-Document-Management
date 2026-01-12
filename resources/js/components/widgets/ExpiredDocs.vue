@@ -6,18 +6,12 @@ import listrow from '../listrow.vue';
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import { route } from 'ziggy-js';
 let labelstyle = inject('labelstyle');
-const documents = inject<Documents[]>('documents', [])
 
-// interface phpdate {
-//     day : string,
-//     month : string,
-//     year : string,
-// }
+let Recent = ref<Documents[]>([]);
+const documents = inject<Documents[]>('documents', []);
 
-let Recent = ref<Documents[]>([])
-
-let DocumentLog = computed(() => [...documents, ...Recent.value])
 const date = new Date()
+
 function addOne(num: number) {
     switch (true) {
         case true:
@@ -74,9 +68,9 @@ function dateparser(d: string) {
 async function remove(id: number) {
     try {
         let res = await axios.post(route('remove'), { 'expdocid': id })
-        let docelem = DocumentLog.value.findIndex(doc=> doc.id = id)
+        let docelem = documents.findIndex(doc=> doc.id = id)
         if(docelem > -1){
-            DocumentLog.value.splice(docelem, 1);
+            documents.splice(docelem, 1);
         }
         console.log(id)
         console.log(res.data);
@@ -91,7 +85,7 @@ async function remove(id: number) {
         }
     }
 }
-console.log(DocumentLog);
+console.log(documents);
 </script>
 
 <template>
@@ -100,14 +94,14 @@ console.log(DocumentLog);
         <p :class="labelstyle">Expired Documents</p>
         <PerfectScrollbar>
             <listrow>
-                <div v-if="DocumentLog">
-                    <div v-for="expdoc in DocumentLog" :key="expdoc.id">
+                <div v-if="documents">
+                    <div v-for="expdoc in documents" :key="expdoc.id">
                         <a v-if="dateparser(expdoc.expire_date)"
-                            class="px-3 bg-red-500 text-[0.5em] flex justify-between sm:text-[0.6em] md:text-[0.6em] lg:text-[0.65em] xl:text-[0.7em] font-bold py-1 text-black border block rounded-md relative"
+                            class="px-3 bg-red-500 text-[0.5em] flex items-center justify-between sm:text-[0.6em] md:text-[0.6em] lg:text-[0.65em] xl:text-[0.7em] font-bold py-1 text-black border block rounded-md relative"
                             href="#">
                             {{ expdoc.filename }} <br>
                             at {{ expdoc.expire_date }}
-                            <div @click="remove(expdoc.id)" class="w-[5%] sm:w-[7%] md:w-[10%] lg:w-[12.5%] xl:w-[14%]">
+                            <div @click="remove(expdoc.id)" class="w-[17%] m-3 sm:w-[9%] md:w-[8%] lg:w-[6%] xl:w-[4%]">
                                 <img src="images/bin.png" class="size-full object-cover">
                             </div>
                         </a>

@@ -3,15 +3,16 @@ import PendingDocs from '@/components/widgets/PendingDocs.vue';
 import ActivityLog from '@/components/widgets/ActivityLog.vue';
 import ExpDocs from '@/components/widgets/ExpDocs.vue';
 import { provide, ref } from 'vue';
-import { Documents } from '@/dbschema';
+import { Documents,Actions } from '@/dbschema';
 
 
 var cls: String = 'container  p-2 border border-white border-5 rounded-xl'
 provide('labelstyle', 'text-white text-[0.7em] font-bold')
 
 
-const  props  = defineProps<{ documents?: Documents[] }>()
+const  props  = defineProps<{ documents?: Documents[],actions?: Actions[] }>()
 provide('documents', props.documents ?? [])
+provide('actions', props.actions ?? [])
 </script>
 
 <template>
