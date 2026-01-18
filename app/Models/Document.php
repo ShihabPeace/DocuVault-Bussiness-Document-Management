@@ -16,7 +16,9 @@ class Document extends Model
     protected $fillable = [
     'filename',
     'link',
-    'checked',
+    'is_pending_checked',
+    'is_quick_checked',
+    'is_expired_checked',
     'user_id',
     'status',
     'pending'

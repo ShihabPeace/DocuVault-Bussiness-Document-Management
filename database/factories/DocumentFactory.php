@@ -60,14 +60,17 @@ class DocumentFactory extends Factory
         $created = now();
         $statuses = EnumsStatus::cases();
         $target = public_path().'\files';
+
         return [
 
-            'filename' => $this->faker->file( public_path().'\dbfiles', $target, false),
+            'filename' => $this->faker->file(public_path().'\dbfiles', $target, false),
             'link' => '/documents/'.$this->faker->unique()->numberBetween(1, 100),
             'user_id' => null,
-            'checked' => $this->faker->boolean(),
+            'is_pending_checked' => true,
+            'is_quick_checked' => true,
+            'is_expired_checked' => true,
             'status' => $statuses[array_rand($statuses)]->value,
-                'created_at' => $created,
+            'created_at' => $created,
             'expire_date' => Carbon::instance($created)->addDays(30), // 30 days after created_at
         ];
     }

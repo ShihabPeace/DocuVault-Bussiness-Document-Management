@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EnumsAction;
 use App\Enums\EnumsStatus;
 use App\Models\Action;
 use App\Models\Document;
+use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth ;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+
+use function Illuminate\Log\log;
+use function Symfony\Component\String\u;
 
 class WidgetController extends Controller
 {
-    public function index()
+    public function dashboardIndex()
     {
         $documents = Document::all()->map(function ($item) {
             return [
@@ -29,20 +37,59 @@ class WidgetController extends Controller
         return Inertia::render('dashboard', ['documents' => $documents, 'actions' => $actions]);
     }
 
-    public function actionuncheck(Request $request)
+    public function Uncheck(Request $request)
     {
         $request->validate([
-            'actid' => 'required|integer|exists:actions,id',
+            'actid' => 'integer|exists:actions,id',
+            'expdocid' => 'integer|exists:documents,id',
+            'pendingid' => 'integer|exists:documents,id',
+            'quickid' => 'integer|exists:documents,id',
         ]);
         try {
-            $ChecekdAction = Action::where('id', $request->actid)->update(['checked' => true]);
+            if($request->actid){
 
-            if ($ChecekdAction) {
-                dump($request->actid);
+                $ChecekdAction = Action::where('id', $request->actid)->update(['checked' => true]);
+    
+                if ($ChecekdAction) {
+                    dump($request->actid);
+    
+                    return response()->json([
+                        'message' => 'checked successfully',
+                    ], 200);
+                }
+            }elseif($request->expdocid){
+                
+                $Checekdexpdoc = Document::where('id', $request->expdocid)->update(['is_expired_checked' => true]);
 
-                return response()->json([
-                    'message' => 'checked successfully',
-                ], 200);
+                if ($Checekdexpdoc) {
+                    dump($request->actid);
+    
+                    return response()->json([
+                        'message' => 'checked successfully',
+                    ], 200);
+                }
+            }elseif($request->quickid){
+                
+                $Checekdquickid = Document::where('id', $request->quickid)->update(['is_quick_checked' => true]);
+    
+                if ($Checekdquickid) {
+                    dump($request->actid);
+    
+                    return response()->json([
+                        'message' => 'checked successfully',
+                    ], 200);
+                }
+            }elseif($request->penddocid){
+                
+                $Checekdpenddocid = Document::where('id', $request->penddocid)->update(['is_pending_checked' => true]);
+    
+                if ($Checekdpenddocid) {
+                    dump($request->actid);
+    
+                    return response()->json([
+                        'message' => 'checked successfully',
+                    ], 200);
+                }
             }
         } catch (QueryException $e) {
             if ($e) {
@@ -67,9 +114,15 @@ class WidgetController extends Controller
         $req->validate([
             'expdocid' => 'required|integer|exists:documents,id',
         ]);
+ 
+        $expdoc = Document::where('id', $req->expdocid)->get();
+        Action::create([
+            'filename' => $expdoc->filename,
+            'user_id' => Auth::id(),
+            'checked' => false,
+            'event_type' => EnumsAction::DELETE,
+        ]);
 
-        $res = Document::where('id', $req->expdocid)->delete();
-        ds($res);
 
     }
 
@@ -90,4 +143,18 @@ class WidgetController extends Controller
 
         $res = Document::where('id', $req->penddocid)->update('status', EnumsStatus::CANCELLED);
     }
+    public function test(Request $req)
+    {
+        $req->validate([
+            'testint' => 'required|integer|exists:users,id',
+        ]);
+
+        $m = 'Document';
+        $model = new $m();
+        $user = $model->find($req->testint);
+        dd($user);
+    }
 }
+/*
+docuvault.test/test/1
+*/

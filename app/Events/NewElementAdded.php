@@ -43,16 +43,14 @@ class NewElementAdded implements ShouldBroadcastNow
 
     public function broadcastWith(): array
     {
+        $data  = [];
         if ($this->document) {
-            return $this->document->toArray();
+            $data['document'] = $this->document->toArray();
         }
         if ($this->action) {
-            return $this->action->toArray();
+            $data['action'] = $this->action->toArray();
         }
-
-        return [
-            'message' => 'no new data',
-        ];
-
+            
+        return $data;
     }
 }

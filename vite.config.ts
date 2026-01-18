@@ -50,6 +50,7 @@ import vue from '@vitejs/plugin-vue';
 import fs from 'fs';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig(({ command }) => {
     const isDev = command === 'serve';
@@ -79,11 +80,6 @@ export default defineConfig(({ command }) => {
             ? {
                   host: 'docuvault.test',
                   port: 5173,
-
-                  https: {
-                      key: fs.readFileSync('C:/Users/ShihabPeace/docuvault.test-key.pem'),
-                      cert: fs.readFileSync('C:/Users/ShihabPeace/docuvault.test.pem'),
-                  },
 
                   hmr: {
                       protocol: 'wss',

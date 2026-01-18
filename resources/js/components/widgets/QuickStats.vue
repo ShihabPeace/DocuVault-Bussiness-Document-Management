@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue';
+import { computed,onMounted, inject, ref } from 'vue';
 import axios from 'axios';
 import { Documents, Actions, Users } from '@/dbschema';
 import listrow from '../listrow.vue';
@@ -11,13 +11,16 @@ import { echo } from '@laravel/echo-vue';
 let Recent = ref<Documents[]>([]);
 const documents = inject<Documents[]>('documents', []);
 
-let echoInstance = echo();
-echoInstance.private('admin-notifications')
-    .listen('NewElementAdded', (e: any) => {
+onMounted(() => {
+    if (!echo) return;
+
+    const echoInstance = echo();
+    echoInstance.private('admin-notifications').listen('NewElementAdded', (e: any) => {
         Recent.value.unshift(e.document);
         console.log('DocumentPendingEvent received:', e);
         // Optionally update Recent or documents here
     });
+});
 
 let PdD = computed(() => documents.filter(d => d.status === 'pending'))
 let ED = computed(() => documents.filter(d => d.status === 'expired'))

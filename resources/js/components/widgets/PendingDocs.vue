@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue';
+import { computed,onMounted, inject, ref } from 'vue';
 import axios from 'axios';
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import { Documents } from '@/dbschema';
 import listrow from '@/components/listrow.vue';
 import { route } from 'ziggy-js';
-import { echo } from '@laravel/echo-vue';
+import { echo }  from '@laravel/echo-vue';
 
 let Recent = ref<Documents[]>([]);
 const documents = inject<Documents[]>('documents', []);
 let labelstyle = inject('labelstyle');
 
-let echoInstance = echo();
-echoInstance.private('admin-notifications')
-    .listen('NewElementAdded', (e: any) => {
+onMounted(() => {
+    if (!echo) return;
+
+    const echoInstance = echo();
+    echoInstance.private('admin-notifications').listen('NewElementAdded', (e: any) => {
         Recent.value.unshift(e.document);
         console.log('DocumentPendingEvent received:', e);
         // Optionally update Recent or documents here
     });
+});
     
 async function cancel(id: number) {
     try {
