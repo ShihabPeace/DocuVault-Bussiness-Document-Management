@@ -8,7 +8,7 @@ import { inject } from 'vue';
 <template>
     <a href="#" class="flex xl:text-[1em] xl:p-2 border-5 p-1 rounded-xl  justify-center  items-center text-white">
         <p>Docu</p>
-        <p>vault</p>
+        <p>Vault</p>
     </a>
 </template>
 <style scoped>

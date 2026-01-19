@@ -11,9 +11,10 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth ;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use PHPUnit\Metadata\UsesFunction;
 
 use function Illuminate\Log\log;
 use function Symfony\Component\String\u;
@@ -153,6 +154,68 @@ class WidgetController extends Controller
         $model = new $m();
         $user = $model->find($req->testint);
         dd($user);
+    }
+
+    public function auth_login(Request $req)
+    {
+        $req->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string',
+        ]);
+        $user = User::where('email', $req->email)->first();
+        $documents = Document::all()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'filename' => $item->filename,
+                'link' => $item->link,
+                'status' => $item->status,
+                'expire_date' => $item->expire_date->format('Y-m-d g:i A'),
+                'created_at' => $item->created_at->format('Y-m-d g:i A'),
+            ];
+        });
+        $actions = Action::with('user')->get();
+        Auth::attempt($user);
+        return Inertia::render('dashboard', ['documents' => $documents, 'actions' => $actions]);
+        // if(Auth::attempt($user) && $user->password == $req->password){
+        //     return Inertia::render('dashboard', ['documents' => $documents, 'actions' => $actions]);
+        // }
+        // return response()->json([
+        //     'message' => 'Invalid credentials - sign-up'
+        // ]);
+    }
+
+    public function auth_register(Request $req)
+    {
+        $req->validate([
+            'firstName' => 'required|string|max:15',
+            'lastName' => 'required|string|max:15',
+            'email' => 'required|email',
+            'password' => 'required|string',
+            'phone' => 'required|string|max:14',
+        ]);
+        $user = User::create([
+            'firstName' => $req->firstName,
+            'lastName' => $req->lastName,
+            'email' => $req->email,
+            'password' => $req->password,
+            'phone' => $req->phone,
+        ]);
+        $documents = Document::all()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'filename' => $item->filename,
+                'link' => $item->link,
+                'status' => $item->status,
+                'expire_date' => $item->expire_date->format('Y-m-d g:i A'),
+                'created_at' => $item->created_at->format('Y-m-d g:i A'),
+            ];
+        });
+        $actions = Action::with('user')->get();
+        Auth::login($user);
+        // return Inertia::location(route('dashboard'));
+        // return Inertia::locationredirect()->route('dashboard');
+        // return Inertia::locationredirect()->route('dashboard')Inertia::render('dashboard'), ['documents' => $documents, 'actions' => $actions]);        
+        return to_route('dashboard',['documents' => $documents, 'actions' => $actions]);        
     }
 }
 /*

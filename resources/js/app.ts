@@ -31,11 +31,6 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         // CSRF token setup
         // Configure Axios to send CSRF token and cookies
-        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        if (token) {
-            axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
-        }
-        axios.defaults.withCredentials = true;
 
         const vueApp = createApp({ render: () => h(App, props) });
 

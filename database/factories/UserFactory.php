@@ -24,9 +24,28 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        
+
+$bdPhones = [
+    '+8801301234567',
+    '+8801312345678',
+    '+8801323456789',
+    '+8801334567890',
+    '+8801345678901',
+    '+8801356789012',
+    '+8801367890123',
+    '+8801378901234',
+    '+8801389012345',
+    '+8801390123456',
+];
+
+print_r($bdPhones);
+
         $roles = EnumsRoles::cases();
         return [
-            'name' => fake()->name(),
+            'firstName' => fake()->name(),
+            'lastName' => fake()->name(),
+            'phone' => $this->faker->randomElement($bdPhones),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
